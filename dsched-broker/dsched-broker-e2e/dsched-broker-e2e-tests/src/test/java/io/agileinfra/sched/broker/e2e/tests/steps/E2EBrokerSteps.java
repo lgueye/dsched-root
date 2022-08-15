@@ -16,10 +16,12 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 @CucumberContextConfiguration
-@SpringBootTest(classes = E2EBrokerCucumberTestConfiguration.class)
+@ContextConfiguration(classes = { E2EBrokerCucumberTestConfiguration.class })
+@TestPropertySource(value = { "classpath:application-test.properties" })
 @RequiredArgsConstructor
 @Slf4j
 public class E2EBrokerSteps {

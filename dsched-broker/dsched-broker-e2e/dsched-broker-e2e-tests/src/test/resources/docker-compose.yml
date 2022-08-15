@@ -72,22 +72,3 @@ services:
       retries: 5
       start_period: 5s
       timeout: 5s
-
-  dsched-broker-e2e-tests:
-    image: dsched-broker-e2e-tests
-    container_name: dsched-broker-e2e-tests
-    environment:
-      - E2E_BROKER_PRODUCER_CLIENT_API_URL=http://dsched-broker-e2e-producer-server:8080
-      - E2E_BROKER_CONSUMER01_CLIENT_API_URL=http://dsched-broker-e2e-consumer-server-01:8080
-      - E2E_BROKER_CONSUMER02_CLIENT_API_URL=http://dsched-broker-e2e-consumer-server-02:8080
-    build:
-      context: ../dsched-broker-e2e-tests
-    depends_on:
-      dsched-broker-e2e-producer-server:
-          condition: service_healthy
-      dsched-broker-e2e-consumer-server-02:
-          condition: service_healthy
-      dsched-broker-e2e-consumer-server-01:
-          condition: service_healthy
-      dsched-broker-server:
-          condition: service_healthy

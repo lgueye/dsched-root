@@ -22,119 +22,117 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit-platform-engine</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>Run Containers</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
+    <profiles>
+        <profile>
+            <id>work</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.brachu</groupId>
+                        <artifactId>docker-compose-maven-plugin</artifactId>
+                        <version>${docker-compose-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>start-containers</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>up</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>destroy-containers</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>down</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                         <configuration>
-                            <async>true</async>
-                            <executable>docker</executable>
-                            <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml up --build --remove-orphans</commandlineArgs>
+                            <followLogs>true</followLogs>
+                            <forceBuild>true</forceBuild>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>Stop Containers</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>docker</executable>
-                            <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml down --remove-orphans</commandlineArgs>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>io.brachu</groupId>-->
-            <!--                <artifactId>docker-compose-maven-plugin</artifactId>-->
-            <!--                <version>${docker-compose-plugin.version}</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>up</goal>-->
-            <!--                            <goal>down</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--                <configuration>-->
-            <!--                    <followLogs>true</followLogs>-->
-            <!--                    <forceBuild>true</forceBuild>-->
-            <!--                    <wait>-->
-            <!--                        <value>15</value>-->
-            <!--                        <unit>SECONDS</unit>-->
-            <!--                    </wait>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
-        </plugins>
-    </build>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>home</id>
+            <activation>
+                <os>
+                    <name>Linux</name>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>start-containers</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>docker</executable>
+                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml up -d --build --remove-orphans</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>destroy-containers</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>docker</executable>
+                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml down --remove-orphans</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
