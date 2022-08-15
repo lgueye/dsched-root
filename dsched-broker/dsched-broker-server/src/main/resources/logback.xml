@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+  <property name="LOG_PATH" value="logs"/>
+  <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive"/>
+  <timestamp key="timestamp-by-second" datePattern="yyyyMMdd'T'HHmmss"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+    </encoder>
+  </appender>
+  <logger name="io.agileinfra" level="INFO" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  <logger name="org.springframework" level="WARN" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  <logger name="org.apache" level="WARN"/>
+  <logger name="httpclient" level="WARN"/>
+  <logger name="com.zaxxer" level="WARN"/>
+  <logger name="kafka" level="WARN"/>
+  <logger name="org.hibernate" level="WARN" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  <root>
+    <appender-ref ref="CONSOLE" level="WARN"/>
+  </root>
+</configuration>
