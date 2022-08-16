@@ -3,20 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.agileinfra</groupId>
-        <artifactId>dsched-root</artifactId>
+        <artifactId>dsched-scheduler-producer</artifactId>
         <version>0.1.0</version>
     </parent>
-    <artifactId>dsched-scheduler</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dsched-scheduler-consumer</module>
-        <module>dsched-scheduler-producer</module>
-        <module>dsched-scheduler-e2e</module>
-    </modules>
+    <artifactId>dsched-scheduler-producer-client</artifactId>
     <dependencies>
         <dependency>
             <groupId>io.agileinfra</groupId>
-            <artifactId>dsched-model</artifactId>
+            <artifactId>dsched-rest-configuration</artifactId>
         </dependency>
     </dependencies>
 </project>

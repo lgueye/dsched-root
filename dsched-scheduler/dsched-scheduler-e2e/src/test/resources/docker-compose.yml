@@ -1,0 +1,76 @@
+version: '3.4'
+
+services:
+  dsched-broker-server:
+    image: dsched-broker-server
+    container_name: dsched-broker-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../../dsched-broker/dsched-broker-server
+    ports:
+      - "9000:8080"
+      - "61616:61616"
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-scheduler-producer-server:
+    image: dsched-scheduler-producer-server
+    container_name: dsched-scheduler-producer-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-scheduler-producer/dsched-scheduler-producer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9100:8080"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-producer-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-scheduler-consumer-server-01:
+    image: dsched-scheduler-consumer-server
+    container_name: dsched-scheduler-consumer-server-01
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9201:8080"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-consumer-server-01:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-scheduler-consumer-server-02:
+    image: dsched-scheduler-consumer-server
+    container_name: dsched-scheduler-consumer-server-02
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9202:8080"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-consumer-server-02:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s

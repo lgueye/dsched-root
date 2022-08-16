@@ -99,6 +99,16 @@
             </dependency>
             <dependency>
                 <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-scheduler-consumer-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-scheduler-producer-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-broker-e2e-consumer-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
