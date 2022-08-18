@@ -18,6 +18,34 @@ services:
       start_period: 5s
       timeout: 5s
 
+  dsched-grid-server-01:
+    image: hazelcast/hazelcast:5.1.3
+    container_name: dsched-grid-server-01
+    environment:
+      - HZ_CLUSTERNAME=e2e
+    ports:
+      - "5701:5701"
+    healthcheck:
+      test: curl -f http://localhost:5701/hazelcast/health/node-state || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-grid-server-02:
+    image: hazelcast/hazelcast:5.1.3
+    container_name: dsched-grid-server-02
+    environment:
+      - HZ_CLUSTERNAME=e2e
+    ports:
+      - "5702:5701"
+    healthcheck:
+      test: curl -f http://localhost:5701/hazelcast/health/node-state || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
   dsched-scheduler-producer-server:
     image: dsched-scheduler-producer-server
     container_name: dsched-scheduler-producer-server
@@ -29,7 +57,8 @@ services:
       dsched-broker-server:
         condition: service_healthy
     ports:
-      - "9100:8080"
+      - "9180:8080"
+      - "9100:8000"
     healthcheck:
       test: curl --fail http://dsched-scheduler-producer-server:8080/actuator/health || exit 1
       interval: 1s
@@ -42,13 +71,17 @@ services:
     container_name: dsched-scheduler-consumer-server-01
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+    volumes:
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:
       dsched-broker-server:
         condition: service_healthy
     ports:
-      - "9201:8080"
+      - "9280:8080"
+      - "9200:8000"
     healthcheck:
       test: curl --fail http://dsched-scheduler-consumer-server-01:8080/actuator/health || exit 1
       interval: 1s
@@ -61,13 +94,17 @@ services:
     container_name: dsched-scheduler-consumer-server-02
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+    volumes:
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:
       dsched-broker-server:
         condition: service_healthy
     ports:
-      - "9202:8080"
+      - "9380:8080"
+      - "9300:8000"
     healthcheck:
       test: curl --fail http://dsched-scheduler-consumer-server-02:8080/actuator/health || exit 1
       interval: 1s

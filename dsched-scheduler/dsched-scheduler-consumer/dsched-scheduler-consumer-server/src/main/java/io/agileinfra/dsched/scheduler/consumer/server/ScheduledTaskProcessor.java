@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduledTaskProcessor implements IncomingMessageProcessor {
 
   private final ObjectMapper objectMapper;
-  private final ScheduledTaskRepository repository;
+  private final SchedulerService service;
 
   @Override
   public boolean accept(final ProcessingContext context) {
@@ -27,7 +27,8 @@ public class ScheduledTaskProcessor implements IncomingMessageProcessor {
     var scheduledTaskClass = ScheduledTask.class;
     try {
       final var scheduledTask = objectMapper.readValue(message, scheduledTaskClass);
-      repository.persist(scheduledTask.toBuilder().created(context.getTimestamp()).build());
+      var task = scheduledTask.toBuilder().created(context.getTimestamp()).build();
+      service.scheduleTask(task);
       log.info("Successfully processed {} from {} at {}", scheduledTask, SourceTopics.SCHEDULED_TASKS, scheduledTask.getCreated());
     } catch (JsonProcessingException e) {
       var classSimpleName = scheduledTaskClass.getSimpleName();

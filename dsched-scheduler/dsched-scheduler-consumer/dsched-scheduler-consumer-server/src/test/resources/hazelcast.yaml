@@ -1,0 +1,6 @@
+hazelcast:
+  cluster-name: integration-tests
+  network:
+    join:
+      multicast:
+        enabled: true

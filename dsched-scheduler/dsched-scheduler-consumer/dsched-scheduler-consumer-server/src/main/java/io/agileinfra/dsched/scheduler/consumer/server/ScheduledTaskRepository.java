@@ -1,22 +1,38 @@
 package io.agileinfra.dsched.scheduler.consumer.server;
 
-import com.google.common.collect.Maps;
+import com.hazelcast.core.HazelcastInstance;
 import io.agileinfra.dsched.model.ScheduledTask;
+import io.agileinfra.dsched.model.SourceTopics;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ScheduledTaskRepository {
 
-  private final Map<UUID, ScheduledTask> store = Maps.newHashMap();
+  private final HazelcastInstance store;
 
   public void persist(final ScheduledTask scheduledTask) {
-    store.put(scheduledTask.getId(), scheduledTask);
+    store.getMap(SourceTopics.SCHEDULED_TASKS).put(scheduledTask.getId(), scheduledTask);
+  }
+
+  public boolean tryLock(final ScheduledTask scheduledTask) {
+    return store.getMap(SourceTopics.SCHEDULED_TASKS).tryLock(scheduledTask.getId());
   }
 
   public List<ScheduledTask> findAll() {
-    return store.values().stream().sorted(Comparator.comparing(ScheduledTask::getCreated)).collect(Collectors.toList());
+    return store
+      .getMap(SourceTopics.SCHEDULED_TASKS)
+      .values()
+      .stream()
+      .map(o -> (ScheduledTask) o)
+      .sorted(Comparator.comparing(ScheduledTask::getCreated))
+      .collect(Collectors.toList());
+  }
+
+  public ScheduledTask findById(UUID id) {
+    return (ScheduledTask) store.getMap(SourceTopics.SCHEDULED_TASKS).get(id);
   }
 }

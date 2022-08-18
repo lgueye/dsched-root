@@ -53,6 +53,21 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-broker-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-scheduler-consumer-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-scheduler-producer-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>

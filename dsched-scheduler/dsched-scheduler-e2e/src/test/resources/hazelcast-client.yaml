@@ -1,0 +1,6 @@
+hazelcast-client:
+  cluster-name: e2e
+  network:
+    cluster-members:
+      - dsched-grid-server-01
+      - dsched-grid-server-02

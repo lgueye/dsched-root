@@ -84,6 +84,22 @@
             </dependency>
             <dependency>
                 <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-broker-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-scheduler-consumer-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-scheduler-producer-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-broker-producer</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -162,16 +178,6 @@
                 <artifactId>dsched-broker-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--    <groupId>io.agileinfra</groupId>-->
-            <!--    <artifactId>dsched-broker-server</artifactId>-->
-            <!--    <version>${project.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--    <groupId>io.agileinfra</groupId>-->
-            <!--    <artifactId>dsched-scheduler-server</artifactId>-->
-            <!--    <version>${project.version}</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
