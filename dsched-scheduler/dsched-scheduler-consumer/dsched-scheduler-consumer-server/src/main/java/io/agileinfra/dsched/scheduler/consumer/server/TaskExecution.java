@@ -39,6 +39,7 @@ public class TaskExecution implements Runnable {
     log.info("Executed job {}: at location {}", taskId, persisted.getTriggerLocation());
 
     repository.persist(persisted.toBuilder().status(TaskStatus.EXECUTED).build());
+    repository.tryUnlock(task);
     log.info("Updated status and persisted job {}", taskId);
   }
 }

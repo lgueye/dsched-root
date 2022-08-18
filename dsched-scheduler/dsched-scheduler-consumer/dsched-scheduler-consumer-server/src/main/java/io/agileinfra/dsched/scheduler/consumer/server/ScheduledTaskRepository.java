@@ -1,6 +1,7 @@
 package io.agileinfra.dsched.scheduler.consumer.server;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
 import io.agileinfra.dsched.model.ScheduledTask;
 import io.agileinfra.dsched.model.SourceTopics;
 import java.util.Comparator;
@@ -20,6 +21,14 @@ public class ScheduledTaskRepository {
 
   public boolean tryLock(final ScheduledTask scheduledTask) {
     return store.getMap(SourceTopics.SCHEDULED_TASKS).tryLock(scheduledTask.getId());
+  }
+
+  public void tryUnlock(final ScheduledTask scheduledTask) {
+    final IMap<Object, Object> map = store.getMap(SourceTopics.SCHEDULED_TASKS);
+    final UUID id = scheduledTask.getId();
+    if (map.isLocked(id)) {
+      map.unlock(id);
+    }
   }
 
   public List<ScheduledTask> findAll() {

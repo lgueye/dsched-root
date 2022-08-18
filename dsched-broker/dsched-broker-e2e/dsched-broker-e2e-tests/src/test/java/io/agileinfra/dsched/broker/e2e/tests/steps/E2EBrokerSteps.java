@@ -30,7 +30,7 @@ public class E2EBrokerSteps {
   private final List<E2EBrokerConsumerClient> consumers;
 
   @DataTableType
-  public ScheduledTask authorEntryTransformer(Map<String, String> entry) {
+  public ScheduledTask taskEntryTransformer(Map<String, String> entry) {
     return ScheduledTask
       .builder()
       .id(UUID.fromString(entry.get("id")))

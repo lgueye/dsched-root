@@ -18,8 +18,8 @@ public class SchedulerService {
   private final RestTemplate restTemplate;
 
   public void scheduleTask(final ScheduledTask task) {
-    var delay = Duration.between(Instant.now(), task.getTriggerAt()).toMillis();
     repository.persist(task);
+    var delay = Duration.between(Instant.now(), task.getTriggerAt()).toMillis();
     executorService.schedule(new TaskExecution(task, repository, restTemplate), delay, TimeUnit.MILLISECONDS);
   }
 }

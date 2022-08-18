@@ -30,27 +30,53 @@ public class E2ESchedulerSteps {
   private final List<SchedulerConsumerClient> consumers;
 
   @DataTableType
-  public ScheduledTask authorEntryTransformer(Map<String, String> entry) {
+  public ScheduledTask taskEntryTransformer(Map<String, String> entry) {
     return ScheduledTask
       .builder()
       .id(UUID.fromString(entry.get("id")))
       .triggerLocation(entry.get("triggerLocation"))
       .label(entry.get("label"))
-      .triggerAt(Instant.parse(entry.get("triggerAt")))
       .build();
   }
 
-  @When("producer posts scheduled tasks:")
-  public void producerPostsScheduledTasks(final List<ScheduledTask> tasks) {
-    tasks.forEach(task -> producer.schedule(task.getId(), task));
+  //
+  //  @When("producer posts scheduled tasks:")
+  //  public void producerPostsScheduledTasks(final List<ScheduledTask> tasks) {
+  //    tasks.forEach(task -> producer.schedule(task.getId(), task));
+  //  }
+  //
+  //  @Then("consumers get tasks:")
+  //  public void consumersGetTasks(final List<ScheduledTask> expected) {
+  //    Awaitility
+  //      .await()
+  //      .pollInterval(Duration.ofMillis(500))
+  //      .atMost(Duration.ofSeconds(2))
+  //      .until(() ->
+  //        consumers
+  //          .stream()
+  //          .allMatch(consumer -> {
+  //            var actual = consumer.findAllSchedules();
+  //            log.info("Consumer {} received {}", consumer, actual);
+  //            return actual.equals(expected);
+  //          })
+  //      );
+  //  }
+
+  @When("producer schedules tasks, {string} from now:")
+  public void producer_schedules_tasks_from_now(String string, final List<ScheduledTask> tasks) {
+    final Instant now = Instant.now();
+    tasks.forEach(task -> {
+      final ScheduledTask scheduled = task.toBuilder().triggerAt(now.plus(Duration.parse(string))).build();
+      producer.schedule(task.getId(), scheduled);
+    });
   }
 
-  @Then("consumers get tasks:")
-  public void consumersGetTasks(final List<ScheduledTask> expected) {
+  @Then("within {string}, consumers get tasks:")
+  public void within_consumers_get_tasks(String string, final List<ScheduledTask> expected) {
     Awaitility
       .await()
       .pollInterval(Duration.ofMillis(500))
-      .atMost(Duration.ofSeconds(2))
+      .atMost(Duration.parse(string))
       .until(() ->
         consumers
           .stream()
