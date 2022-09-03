@@ -12,5 +12,9 @@
             <groupId>io.agileinfra</groupId>
             <artifactId>dsched-broker-configuration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-clock-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

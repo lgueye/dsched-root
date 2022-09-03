@@ -1,6 +1,8 @@
 package io.agileinfra.dsched.broker.consumer;
 
 import io.agileinfra.dsched.broker.configuration.BrokerConfiguration;
+import io.agileinfra.dsched.clock.api.ClockApiConfiguration;
+import io.agileinfra.dsched.clock.model.ClockApi;
 import java.util.List;
 import javax.jms.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +12,7 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 
 @Configuration
-@Import(BrokerConfiguration.class)
+@Import({ BrokerConfiguration.class, ClockApiConfiguration.class })
 @EnableJms
 public class BrokerConsumerConfiguration {
 
@@ -24,12 +26,12 @@ public class BrokerConsumerConfiguration {
   }
 
   @Bean
-  public BrokerReactor brokerReactor(final List<IncomingMessageProcessor> processors) {
-    return new BrokerReactor(processors);
+  public BrokerReactor brokerReactor(final List<IncomingMessageProcessor> processors, final ClockApi clockApi) {
+    return new BrokerReactor(processors, clockApi);
   }
 
   @Bean
-  public BrokerConsumer brokerConsumer(final BrokerReactor brokerReactor) {
-    return new BrokerConsumer(brokerReactor);
+  public BrokerConsumer brokerConsumer(final BrokerReactor brokerReactor, final ClockApi clockApi) {
+    return new BrokerConsumer(brokerReactor, clockApi);
   }
 }
