@@ -1,6 +1,6 @@
 package io.agileinfra.dsched.scheduler.producer.server;
 
-import java.time.Instant;
+import io.agileinfra.dsched.clock.model.ClockApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class JobController {
 
+  private final ClockApi clockApi;
+
   @PostMapping
   public void triggerMe() {
-    log.info("Successfully triggered at {}", Instant.now());
+    log.info("Successfully triggered at {}", clockApi.now());
   }
 }
