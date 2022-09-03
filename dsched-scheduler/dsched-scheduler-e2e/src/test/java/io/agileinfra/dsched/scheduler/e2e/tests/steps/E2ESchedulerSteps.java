@@ -1,5 +1,6 @@
 package io.agileinfra.dsched.scheduler.e2e.tests.steps;
 
+import io.agileinfra.dsched.clock.model.ClockApi;
 import io.agileinfra.dsched.model.ScheduledTask;
 import io.agileinfra.dsched.scheduler.consumer.client.SchedulerConsumerClient;
 import io.agileinfra.dsched.scheduler.e2e.tests.E2ESchedulerCucumberTestConfiguration;
@@ -28,6 +29,7 @@ public class E2ESchedulerSteps {
 
   private final SchedulerProducerClient producer;
   private final List<SchedulerConsumerClient> consumers;
+  private final ClockApi clockApi;
 
   @DataTableType
   public ScheduledTask taskEntryTransformer(Map<String, String> entry) {
@@ -39,32 +41,9 @@ public class E2ESchedulerSteps {
       .build();
   }
 
-  //
-  //  @When("producer posts scheduled tasks:")
-  //  public void producerPostsScheduledTasks(final List<ScheduledTask> tasks) {
-  //    tasks.forEach(task -> producer.schedule(task.getId(), task));
-  //  }
-  //
-  //  @Then("consumers get tasks:")
-  //  public void consumersGetTasks(final List<ScheduledTask> expected) {
-  //    Awaitility
-  //      .await()
-  //      .pollInterval(Duration.ofMillis(500))
-  //      .atMost(Duration.ofSeconds(2))
-  //      .until(() ->
-  //        consumers
-  //          .stream()
-  //          .allMatch(consumer -> {
-  //            var actual = consumer.findAllSchedules();
-  //            log.info("Consumer {} received {}", consumer, actual);
-  //            return actual.equals(expected);
-  //          })
-  //      );
-  //  }
-
   @When("producer schedules tasks, {string} from now:")
   public void producer_schedules_tasks_from_now(String string, final List<ScheduledTask> tasks) {
-    final Instant now = Instant.now();
+    final Instant now = clockApi.now();
     tasks.forEach(task -> {
       final ScheduledTask scheduled = task.toBuilder().triggerAt(now.plus(Duration.parse(string))).build();
       producer.schedule(task.getId(), scheduled);

@@ -1,6 +1,20 @@
 version: '3.4'
 
 services:
+  dsched-clock-server:
+    image: dsched-clock-server
+    container_name: dsched-clock-server
+    build:
+      context: ../../dsched-clock/dsched-clock-server
+    ports:
+      - "8000:8080"
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
   dsched-broker-server:
     image: dsched-broker-server
     container_name: dsched-broker-server
@@ -51,6 +65,8 @@ services:
     container_name: dsched-scheduler-producer-server
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
     build:
       context: ../dsched-scheduler-producer/dsched-scheduler-producer-server
     depends_on:
@@ -72,11 +88,15 @@ services:
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
       - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
     volumes:
       - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:
+      dsched-clock-server:
+        condition: service_healthy
       dsched-broker-server:
         condition: service_healthy
     ports:
@@ -95,11 +115,15 @@ services:
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
       - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
     volumes:
       - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:
+      dsched-clock-server:
+        condition: service_healthy
       dsched-broker-server:
         condition: service_healthy
     ports:
