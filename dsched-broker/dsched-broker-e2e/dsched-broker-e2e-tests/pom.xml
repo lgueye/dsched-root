@@ -53,6 +53,12 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-clock-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
     <profiles>
         <profile>

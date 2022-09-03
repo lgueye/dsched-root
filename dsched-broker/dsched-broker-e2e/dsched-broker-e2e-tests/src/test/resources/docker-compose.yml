@@ -1,6 +1,19 @@
 version: '3.4'
 
 services:
+  dsched-clock-server:
+    image: dsched-clock-server
+    container_name: dsched-clock-server
+    build:
+      context: ../../../dsched-clock/dsched-clock-server
+    ports:
+      - "8000:8080"
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
   dsched-broker-server:
     image: dsched-broker-server
     container_name: dsched-broker-server
@@ -41,10 +54,13 @@ services:
     container_name: dsched-broker-e2e-consumer-server-01
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
     build:
       context: ../dsched-broker-e2e-consumer/dsched-broker-e2e-consumer-server
     depends_on:
       dsched-broker-server:
+        condition: service_healthy
+      dsched-clock-server:
         condition: service_healthy
     ports:
       - "9201:8080"
@@ -60,10 +76,14 @@ services:
     container_name: dsched-broker-e2e-consumer-server-02
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
     build:
       context: ../dsched-broker-e2e-consumer/dsched-broker-e2e-consumer-server
     depends_on:
-      - dsched-broker-server
+      dsched-broker-server:
+        condition: service_healthy
+      dsched-clock-server:
+        condition: service_healthy
     ports:
       - "9202:8080"
     healthcheck:
