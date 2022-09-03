@@ -13,10 +13,6 @@
             <artifactId>dsched-broker-consumer</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.agileinfra</groupId>
-            <artifactId>dsched-model</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-spring</artifactId>
         </dependency>
@@ -28,7 +24,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-clock-api</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

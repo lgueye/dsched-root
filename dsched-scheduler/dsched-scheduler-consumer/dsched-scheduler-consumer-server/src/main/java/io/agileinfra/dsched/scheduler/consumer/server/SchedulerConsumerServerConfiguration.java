@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
 import io.agileinfra.dsched.broker.consumer.BrokerConsumerConfiguration;
 import io.agileinfra.dsched.broker.consumer.IncomingMessageProcessor;
+import io.agileinfra.dsched.clock.api.ClockApiConfiguration;
+import io.agileinfra.dsched.clock.model.ClockApi;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Import(BrokerConsumerConfiguration.class)
+@Import({ BrokerConsumerConfiguration.class, ClockApiConfiguration.class })
 @Slf4j
 public class SchedulerConsumerServerConfiguration {
 
@@ -31,9 +33,10 @@ public class SchedulerConsumerServerConfiguration {
   SchedulerService schedulerService(
     final ScheduledExecutorService scheduledExecutorService,
     final ScheduledTaskRepository repository,
-    final RestTemplate restTemplate
+    final RestTemplate restTemplate,
+    final ClockApi clockApi
   ) {
-    return new SchedulerService(scheduledExecutorService, repository, restTemplate);
+    return new SchedulerService(scheduledExecutorService, repository, restTemplate, clockApi);
   }
 
   @Bean
