@@ -10,6 +10,7 @@
     </prerequisites>
     <modules>
         <module>dsched-model</module>
+        <module>dsched-clock</module>
         <module>dsched-rest-configuration</module>
         <module>dsched-scheduler</module>
         <module>dsched-broker</module>
@@ -72,6 +73,21 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-clock-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-clock-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-clock-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-broker-configuration</artifactId>
