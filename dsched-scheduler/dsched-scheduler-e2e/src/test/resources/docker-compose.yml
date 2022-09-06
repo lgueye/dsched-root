@@ -60,9 +60,9 @@ services:
       start_period: 5s
       timeout: 5s
 
-  dsched-scheduler-producer-server:
+  dsched-scheduler-producer-server-01:
     image: dsched-scheduler-producer-server
-    container_name: dsched-scheduler-producer-server
+    container_name: dsched-scheduler-producer-server-01
     environment:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
       - SPRING_PROFILES_ACTIVE=e2e
@@ -76,7 +76,48 @@ services:
       - "9180:8080"
       - "9100:8000"
     healthcheck:
-      test: curl --fail http://dsched-scheduler-producer-server:8080/actuator/health || exit 1
+      test: curl --fail http://dsched-scheduler-producer-server-01:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-scheduler-producer-server-02:
+    image: dsched-scheduler-producer-server
+    container_name: dsched-scheduler-producer-server-02
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+    build:
+      context: ../dsched-scheduler-producer/dsched-scheduler-producer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9280:8080"
+      - "9200:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-producer-server-02:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  reverse-proxy:
+    image: reverse-proxy
+    container_name: reverse-proxy
+    build:
+      context: src/test/resources/nginx
+    depends_on:
+      dsched-scheduler-producer-server-01:
+        condition: service_healthy
+      dsched-scheduler-producer-server-02:
+        condition: service_healthy
+    ports:
+      - "7000:80"
+    healthcheck:
+      test: curl --fail http://reverse-proxy/actuator/health || exit 1
       interval: 1s
       retries: 5
       start_period: 5s
@@ -100,8 +141,8 @@ services:
       dsched-broker-server:
         condition: service_healthy
     ports:
-      - "9280:8080"
-      - "9200:8000"
+      - "9380:8080"
+      - "9300:8000"
     healthcheck:
       test: curl --fail http://dsched-scheduler-consumer-server-01:8080/actuator/health || exit 1
       interval: 1s
@@ -127,8 +168,8 @@ services:
       dsched-broker-server:
         condition: service_healthy
     ports:
-      - "9380:8080"
-      - "9300:8000"
+      - "9480:8080"
+      - "9400:8000"
     healthcheck:
       test: curl --fail http://dsched-scheduler-consumer-server-02:8080/actuator/health || exit 1
       interval: 1s

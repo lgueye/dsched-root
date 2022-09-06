@@ -145,52 +145,49 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec-maven-plugin.version}</version>
+                        <groupId>io.brachu</groupId>
+                        <artifactId>docker-compose-maven-plugin</artifactId>
+                        <version>${docker-compose-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>start-containers</id>
                                 <phase>test-compile</phase>
                                 <goals>
-                                    <goal>exec</goal>
+                                    <goal>up</goal>
                                 </goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml up -d --build --remove-orphans</commandlineArgs>
-                                </configuration>
                             </execution>
                             <execution>
                                 <id>destroy-containers</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml down --remove-orphans</commandlineArgs>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sleep-for-a-while</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>run</goal>
+                                    <goal>down</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
-                            <tasks>
-                                <sleep seconds="5"></sleep>
-                            </tasks>
+                            <executablePath>/usr/lib/docker/cli-plugins/docker-compose</executablePath>
+                            <followLogs>true</followLogs>
+                            <forceBuild>true</forceBuild>
                         </configuration>
                     </plugin>
+                    <!--                    <plugin>-->
+                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+                    <!--                        <artifactId>maven-antrun-plugin</artifactId>-->
+                    <!--                        <executions>-->
+                    <!--                            <execution>-->
+                    <!--                                <id>sleep-for-a-while</id>-->
+                    <!--                                <phase>test-compile</phase>-->
+                    <!--                                <goals>-->
+                    <!--                                    <goal>run</goal>-->
+                    <!--                                </goals>-->
+                    <!--                            </execution>-->
+                    <!--                        </executions>-->
+                    <!--                        <configuration>-->
+                    <!--                            <tasks>-->
+                    <!--                                <sleep seconds="5"></sleep>-->
+                    <!--                            </tasks>-->
+                    <!--                        </configuration>-->
+                    <!--                    </plugin>-->
                 </plugins>
             </build>
         </profile>
