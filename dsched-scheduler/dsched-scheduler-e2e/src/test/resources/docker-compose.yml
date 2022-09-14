@@ -13,7 +13,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-broker-server:
     image: dsched-broker-server
@@ -30,7 +30,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-grid-server-01:
     image: hazelcast/hazelcast:5.1.3
@@ -44,7 +44,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-grid-server-02:
     image: hazelcast/hazelcast:5.1.3
@@ -58,7 +58,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-scheduler-producer-server-01:
     image: dsched-scheduler-producer-server
@@ -80,7 +80,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-scheduler-producer-server-02:
     image: dsched-scheduler-producer-server
@@ -102,7 +102,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   reverse-proxy:
     image: reverse-proxy
@@ -119,9 +119,9 @@ services:
     healthcheck:
       test: curl --fail http://reverse-proxy/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 30
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-scheduler-consumer-server-01:
     image: dsched-scheduler-consumer-server
@@ -148,7 +148,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
 
   dsched-scheduler-consumer-server-02:
     image: dsched-scheduler-consumer-server
@@ -175,4 +175,4 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 5s
+      timeout: 30s
