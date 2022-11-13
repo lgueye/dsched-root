@@ -14,6 +14,7 @@
         <module>dsched-rest-configuration</module>
         <module>dsched-scheduler</module>
         <module>dsched-broker</module>
+        <module>dsched-notification</module>
     </modules>
     <properties>
         <activemq-broker.version>5.15.9</activemq-broker.version>
@@ -80,12 +81,27 @@
             </dependency>
             <dependency>
                 <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-notification-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-notification-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-clock-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-clock-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra</groupId>
+                <artifactId>dsched-notification-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -113,7 +129,6 @@
                 <artifactId>dsched-scheduler-producer-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.agileinfra</groupId>
                 <artifactId>dsched-broker-producer</artifactId>
@@ -258,6 +273,16 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-messaging</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-websocket</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>

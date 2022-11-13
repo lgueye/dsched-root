@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  dsched-clock-server:
+    image: dsched-clock-server
+    container_name: dsched-clock-server
+    build:
+      context: ../../dsched-clock/dsched-clock-server
+    ports:
+      - "8000:8080"
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+  dsched-broker-server:
+    image: dsched-broker-server
+    container_name: dsched-broker-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../../dsched-broker/dsched-broker-server
+    ports:
+      - "9000:8080"
+      - "61616:61616"
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+  dsched-notification-server:
+    image: dsched-notification-server
+    container_name: dsched-notification-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-notification-server
+    depends_on:
+      - dsched-broker-server
+    ports:
+      - "9100:8080"
+    healthcheck:
+      test: curl --fail http://dsched-notification-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 5s

@@ -2,8 +2,8 @@ package io.agileinfra.dsched.scheduler.consumer.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
-import io.agileinfra.dsched.broker.consumer.BrokerConsumerConfiguration;
 import io.agileinfra.dsched.broker.consumer.IncomingMessageProcessor;
+import io.agileinfra.dsched.broker.consumer.ScheduledTasksBrokerConsumerConfiguration;
 import io.agileinfra.dsched.clock.api.ClockApiConfiguration;
 import io.agileinfra.dsched.clock.model.ClockApi;
 import java.util.concurrent.Executors;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Import({ BrokerConsumerConfiguration.class, ClockApiConfiguration.class })
+@Import({ ScheduledTasksBrokerConsumerConfiguration.class, ClockApiConfiguration.class })
 @Slf4j
 public class SchedulerConsumerServerConfiguration {
 

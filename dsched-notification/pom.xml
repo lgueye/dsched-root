@@ -3,18 +3,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.agileinfra</groupId>
-        <artifactId>dsched-broker</artifactId>
+        <artifactId>dsched-root</artifactId>
         <version>0.1.0</version>
     </parent>
-    <artifactId>dsched-broker-producer</artifactId>
+    <artifactId>dsched-notification</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dsched-notification-api</module>
+        <module>dsched-notification-e2e</module>
+        <module>dsched-notification-model</module>
+        <module>dsched-notification-server</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>io.agileinfra</groupId>
-            <artifactId>dsched-broker-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.agileinfra</groupId>
-            <artifactId>dsched-notification-model</artifactId>
+            <artifactId>dsched-model</artifactId>
         </dependency>
     </dependencies>
 </project>

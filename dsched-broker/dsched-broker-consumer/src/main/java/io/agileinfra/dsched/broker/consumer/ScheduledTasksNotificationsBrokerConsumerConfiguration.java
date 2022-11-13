@@ -14,24 +14,24 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 @Configuration
 @Import({ BrokerConfiguration.class, ClockApiConfiguration.class })
 @EnableJms
-public class BrokerConsumerConfiguration {
+public class ScheduledTasksNotificationsBrokerConsumerConfiguration {
 
   @Bean
-  public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(final ConnectionFactory connectionFactory) {
+  DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory(final ConnectionFactory connectionFactory) {
     var factory = new DefaultJmsListenerContainerFactory();
     factory.setConnectionFactory(connectionFactory);
     factory.setConcurrency("1-1");
-    factory.setPubSubDomain(true);
+    factory.setPubSubDomain(false);
     return factory;
   }
 
   @Bean
-  public BrokerReactor brokerReactor(final List<IncomingMessageProcessor> processors, final ClockApi clockApi) {
+  BrokerReactor brokerReactor(final List<IncomingMessageProcessor> processors, final ClockApi clockApi) {
     return new BrokerReactor(processors, clockApi);
   }
 
   @Bean
-  public BrokerConsumer brokerConsumer(final BrokerReactor brokerReactor, final ClockApi clockApi) {
-    return new BrokerConsumer(brokerReactor, clockApi);
+  ScheduledTasksNotificationsBrokerConsumer scheduledTasksNotificationsBrokerConsumer(BrokerReactor reactor) {
+    return new ScheduledTasksNotificationsBrokerConsumer(reactor);
   }
 }

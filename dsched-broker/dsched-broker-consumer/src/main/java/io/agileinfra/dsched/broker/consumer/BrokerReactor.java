@@ -14,6 +14,7 @@ public class BrokerReactor {
   private final ClockApi clockApi;
 
   void process(String message, String source) {
+    log.info("Successfully received {} from {} at {}", message, source, clockApi.now());
     final Instant now = clockApi.now();
     final ProcessingContext context = ProcessingContext.builder().source(source).timestamp(now).message(message).build();
     log.info("processing context {} at {}", context, now);

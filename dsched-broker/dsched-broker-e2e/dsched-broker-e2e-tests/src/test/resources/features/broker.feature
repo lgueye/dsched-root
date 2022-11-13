@@ -1,6 +1,6 @@
 Feature: Submitting scheduled tasks should be successful
 
-  Scenario: All consumer should get the exact same scheduled tasks copy
+  Scenario: All consumers should get the exact same scheduled tasks copy
     When producer posts scheduled tasks:
       | id                                   | triggerLocation                                                 | label   | triggerAt                | status    |
       | 78866723-506D-4F83-A8DA-B581E5819E1A | http://dsched-broker-e2e-producer-server:8080/api/v1/trigger-me | task 01 | 2023-12-01T10:00:00.000Z | SUBMITTED |

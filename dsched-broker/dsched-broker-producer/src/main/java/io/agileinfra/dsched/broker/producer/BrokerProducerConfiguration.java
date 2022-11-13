@@ -16,12 +16,20 @@ public class BrokerProducerConfiguration {
   JmsTemplate jmsTopicTemplate(final ConnectionFactory connectionFactory, final MessageConverter messageConverter) {
     var jmsTemplate = new JmsTemplate(connectionFactory);
     jmsTemplate.setMessageConverter(messageConverter);
-    jmsTemplate.setPubSubDomain(true);
+    jmsTemplate.setPubSubDomain(true); // topic: all listeners will receive the message
     return jmsTemplate;
   }
 
   @Bean
-  BrokerProducer brokerProducer(final JmsTemplate jmsTemplate) {
-    return new BrokerProducer(jmsTemplate);
+  JmsTemplate jmsQueueTemplate(final ConnectionFactory connectionFactory, final MessageConverter messageConverter) {
+    var jmsTemplate = new JmsTemplate(connectionFactory);
+    jmsTemplate.setMessageConverter(messageConverter);
+    jmsTemplate.setPubSubDomain(false); // queue: only one listener will receive the message
+    return jmsTemplate;
+  }
+
+  @Bean
+  BrokerProducer brokerProducer(final JmsTemplate jmsTopicTemplate, final JmsTemplate jmsQueueTemplate) {
+    return new BrokerProducer(jmsTopicTemplate, jmsQueueTemplate);
   }
 }
