@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-notification-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
             <artifactId>dsched-scheduler-producer-client</artifactId>
         </dependency>
         <dependency>
@@ -64,6 +68,11 @@
         </dependency>
         <dependency>
             <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-notification-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.agileinfra</groupId>
             <artifactId>dsched-scheduler-consumer-server</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -103,7 +112,7 @@
                 <configuration>
                     <executablePath>${docker-compose.executable.path}</executablePath>
                     <followLogs>true</followLogs>
-                    <forceBuild>false</forceBuild>
+                    <forceBuild>true</forceBuild>
                 </configuration>
             </plugin>
         </plugins>

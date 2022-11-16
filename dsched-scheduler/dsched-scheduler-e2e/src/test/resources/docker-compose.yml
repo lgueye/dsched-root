@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8080"
     healthcheck:
-      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      test: curl --fail http://dsched-clock-server:8080/actuator/health || exit 1
       interval: 1s
       retries: 5
       start_period: 5s
@@ -26,7 +26,23 @@ services:
       - "9000:8080"
       - "61616:61616"
     healthcheck:
-      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      test: curl --fail http://dsched-broker-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 30s
+
+  dsched-notification-server:
+    image: dsched-notification-server
+    container_name: dsched-notification-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../../dsched-notification/dsched-notification-server
+    ports:
+      - "9080:8080"
+    healthcheck:
+      test: curl --fail http://dsched-notification-server:8080/actuator/health || exit 1
       interval: 1s
       retries: 5
       start_period: 5s
@@ -131,6 +147,7 @@ services:
       - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
       - SPRING_PROFILES_ACTIVE=e2e
       - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+      - node=dsched-scheduler-consumer-server-01
     volumes:
       - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
@@ -158,6 +175,7 @@ services:
       - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
       - SPRING_PROFILES_ACTIVE=e2e
       - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+      - node=dsched-scheduler-consumer-server-02
     volumes:
       - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:

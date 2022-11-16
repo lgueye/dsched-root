@@ -2,6 +2,7 @@ package io.agileinfra.dsched.scheduler.e2e.tests.steps;
 
 import io.agileinfra.dsched.clock.model.ClockApi;
 import io.agileinfra.dsched.model.ScheduledTask;
+import io.agileinfra.dsched.model.TaskStatus;
 import io.agileinfra.dsched.scheduler.consumer.client.SchedulerConsumerClient;
 import io.agileinfra.dsched.scheduler.e2e.tests.E2ESchedulerCucumberTestConfiguration;
 import io.agileinfra.dsched.scheduler.producer.client.SchedulerProducerClient;
@@ -37,6 +38,7 @@ public class E2ESchedulerSteps {
       .builder()
       .id(UUID.fromString(entry.get("id")))
       .triggerLocation(entry.get("triggerLocation"))
+      .status(TaskStatus.valueOf(entry.get("status")))
       .label(entry.get("label"))
       .build();
   }

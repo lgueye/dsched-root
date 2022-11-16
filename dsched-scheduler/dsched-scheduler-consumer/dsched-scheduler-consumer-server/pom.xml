@@ -8,9 +8,15 @@
     </parent>
     <artifactId>dsched-scheduler-consumer-server</artifactId>
     <dependencies>
+        <!-- consume ScheduleTask -->
         <dependency>
             <groupId>io.agileinfra</groupId>
             <artifactId>dsched-broker-consumer</artifactId>
+        </dependency>
+        <!-- produce ScheduleTaskNotification -->
+        <dependency>
+            <groupId>io.agileinfra</groupId>
+            <artifactId>dsched-broker-producer</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>

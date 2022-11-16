@@ -1,10 +1,7 @@
 package io.agileinfra.dsched.notification.model;
 
 import io.agileinfra.dsched.model.ScheduledTask;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
@@ -12,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@EqualsAndHashCode(exclude = { "node" })
 public class ScheduledTaskNotification {
 
   private ScheduledTask task;
