@@ -69,7 +69,7 @@ public class E2ENotificationSteps {
       .atMost(Duration.ofSeconds(2))
       .until(() -> {
         var notifications = notificationApi.getNotifications();
-        log.info("ws client received notifications {}", notifications);
+        log.debug("ws client received notifications {}", notifications);
         return expected.equals(notifications);
       });
   }

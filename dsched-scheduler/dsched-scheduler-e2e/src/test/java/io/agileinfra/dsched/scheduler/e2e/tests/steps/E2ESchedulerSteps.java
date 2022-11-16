@@ -12,9 +12,11 @@ import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
@@ -63,7 +65,7 @@ public class E2ESchedulerSteps {
           .stream()
           .allMatch(consumer -> {
             var actual = consumer.findAllSchedules();
-            log.info("Consumer {} received {}", consumer, actual);
+            log.debug("Consumer {} received {}", consumer, actual);
             return actual.equals(expected);
           })
       );

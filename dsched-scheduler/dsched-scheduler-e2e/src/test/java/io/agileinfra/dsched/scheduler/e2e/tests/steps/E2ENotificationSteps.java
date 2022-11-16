@@ -54,9 +54,9 @@ public class E2ENotificationSteps {
       .atMost(Duration.ofSeconds(5))
       .until(() -> {
         var notifications = notificationApi.getNotifications();
-        log.info("ws client received notifications {}", notifications);
-        log.info("EXPECTED {}", expected);
-        log.info("ACTUAL {}", notifications);
+        log.debug("ws client received notifications {}", notifications);
+        log.debug("EXPECTED {}", expected);
+        log.debug("ACTUAL {}", notifications);
         return (
           expected.equals(notifications) &&
           notifications.stream().allMatch(notification -> notification.getNode().contains("dsched-scheduler-consumer-server-"))

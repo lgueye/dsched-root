@@ -4,6 +4,7 @@ import io.agileinfra.dsched.broker.e2e.consumer.client.E2EBrokerConsumerClient;
 import io.agileinfra.dsched.broker.e2e.producer.client.E2EBrokerProducerClient;
 import io.agileinfra.dsched.broker.e2e.tests.E2EBrokerCucumberTestConfiguration;
 import io.agileinfra.dsched.model.ScheduledTask;
+import io.agileinfra.dsched.model.TaskStatus;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -36,6 +37,7 @@ public class E2EBrokerSteps {
       .id(UUID.fromString(entry.get("id")))
       .triggerLocation(entry.get("triggerLocation"))
       .label(entry.get("label"))
+      .status(TaskStatus.valueOf(entry.get("status")))
       .triggerAt(Instant.parse(entry.get("triggerAt")))
       .build();
   }
@@ -56,7 +58,7 @@ public class E2EBrokerSteps {
           .stream()
           .allMatch(consumer -> {
             var actual = consumer.findAllSchedules();
-            log.info("Consumer {} received {}", consumer, actual);
+            log.debug("Consumer {} received {}", consumer, actual);
             return actual.equals(expected);
           })
       );
