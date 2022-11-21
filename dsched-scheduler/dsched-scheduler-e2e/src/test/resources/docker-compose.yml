@@ -13,7 +13,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-broker-server:
     image: dsched-broker-server
@@ -30,7 +30,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-notification-server:
     image: dsched-notification-server
@@ -39,6 +39,9 @@ services:
       - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
     build:
       context: ../../dsched-notification/dsched-notification-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
     ports:
       - "9080:8080"
     healthcheck:
@@ -46,7 +49,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-grid-server-01:
     image: hazelcast/hazelcast:5.1.3
@@ -60,7 +63,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-grid-server-02:
     image: hazelcast/hazelcast:5.1.3
@@ -74,7 +77,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-scheduler-producer-server-01:
     image: dsched-scheduler-producer-server
@@ -96,7 +99,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-scheduler-producer-server-02:
     image: dsched-scheduler-producer-server
@@ -118,7 +121,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   reverse-proxy:
     image: reverse-proxy
@@ -137,7 +140,7 @@ services:
       interval: 1s
       retries: 30
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-scheduler-consumer-server-01:
     image: dsched-scheduler-consumer-server
@@ -155,7 +158,7 @@ services:
     depends_on:
       dsched-clock-server:
         condition: service_healthy
-      dsched-broker-server:
+      dsched-notification-server:
         condition: service_healthy
     ports:
       - "9380:8080"
@@ -165,7 +168,7 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
 
   dsched-scheduler-consumer-server-02:
     image: dsched-scheduler-consumer-server
@@ -183,7 +186,7 @@ services:
     depends_on:
       dsched-clock-server:
         condition: service_healthy
-      dsched-broker-server:
+      dsched-notification-server:
         condition: service_healthy
     ports:
       - "9480:8080"
@@ -193,4 +196,4 @@ services:
       interval: 1s
       retries: 5
       start_period: 5s
-      timeout: 30s
+      timeout: 60s
