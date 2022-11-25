@@ -140,7 +140,7 @@ services:
       interval: 1s
       retries: 30
       start_period: 5s
-      timeout: 60s
+      timeout: 80s
 
   dsched-scheduler-consumer-server-01:
     image: dsched-scheduler-consumer-server

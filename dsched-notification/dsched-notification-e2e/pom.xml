@@ -82,14 +82,14 @@
                 <executions>
                     <execution>
                         <id>start-containers</id>
-                        <phase>test-compile</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>up</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>destroy-containers</id>
-                        <phase>package</phase>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>down</goal>
                         </goals>
