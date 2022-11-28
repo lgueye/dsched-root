@@ -36,8 +36,9 @@ export default {
     const stompClient = Stomp.over(socket)
     stompClient.connect({}, function () {
       stompClient.subscribe('/topic/scheduled-notifications', function (data) {
-        console.log('Message from server ', data.body)
-        scheduledTaskNotifications.value.push(data.body)
+        let notification = JSON.parse(data.body)
+        console.log('Message from server ', notification)
+        scheduledTaskNotifications.value.push(notification)
       })
     })
 
