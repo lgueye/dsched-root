@@ -22,7 +22,10 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
   private final ObjectMapper objectMapper;
 
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws/v1/scheduled-notifications").withSockJS();
+    registry
+      .addEndpoint("/ws/v1/scheduled-notifications")
+      .setAllowedOrigins("http://localhost:5000", "http://localhost:7000", "http://localhost:9080")
+      .withSockJS();
   }
 
   public void configureMessageBroker(MessageBrokerRegistry registry) {
