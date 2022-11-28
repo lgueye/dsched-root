@@ -15,6 +15,7 @@
         <module>dsched-scheduler</module>
         <module>dsched-broker</module>
         <module>dsched-notification</module>
+        <module>dsched-demo</module>
     </modules>
     <properties>
         <activemq-broker.version>5.15.9</activemq-broker.version>
@@ -36,7 +37,7 @@
         <hazelcast.version>5.1.2</hazelcast.version>
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <httpclient.version>4.4</httpclient.version>
-        <jackson.version>2.12.6.1</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <java.version>${maven.compiler.source}</java.version>
         <java.version>${maven.compiler.source}</java.version>
@@ -247,6 +248,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
