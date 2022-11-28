@@ -1,23 +1,28 @@
 <template>
-    <div
-            id="slider"
-            class="slide-in orange"
-            v-for="event in notifs"
-            :key="event.time">
-        <ul>
-            <p>
-                {{ event?.time }} - {{ event?.node }} - {{ event?.task?.status }}
-            </p>
-            <li>
-                {{ event?.task?.id }}
-            </li>
-            <li>
-                {{ event?.task?.label }}
-            </li>
-            <li>
-                {{ event?.task?.triggerLocation }}
-            </li>
-        </ul>
+    <div class="row d-flex justify-content-center mt-70 mb-70">
+        <div class="col-md-6">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Notifications timeline</h5>
+                    <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column" v-for="event in notifs" :key="event.time">
+                        <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                                <span class="vertical-timeline-element-icon bounce-in">
+                                    <i class="badge badge-dot badge-dot-xl badge-success" v-if="event.task.status === 'SUBMITTED'"></i>
+                                    <i class="badge badge-dot badge-dot-xl badge-warning" v-else></i>
+                                </span>
+                                <div class="vertical-timeline-element-content bounce-in">
+                                    <h4 class="timeline-title">Task {{ event?.task?.id }}</h4>
+                                    <p v-if="event.task.status === 'SUBMITTED'">SCHEDULED by {{ event?.node }}</p>
+                                    <p v-else>{{ event?.task?.status }} by {{ event?.node }}</p>
+                                    <span class="vertical-timeline-element-date">{{ event?.time }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -25,24 +30,26 @@
 import { ref } from 'vue'
 import SockJS from 'sockjs-client'
 import { Stomp } from '@stomp/stompjs'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'NotificationsComponent',
   setup () {
-    const scheduledTaskNotifications = ref([
-    ])
+    const scheduledTaskNotifications = ref([])
     const serverUrl = 'http://localhost:9080/ws/v1/scheduled-notifications'
     const socket = new SockJS(serverUrl)
     const stompClient = Stomp.over(socket)
     stompClient.connect({}, function () {
       stompClient.subscribe('/topic/scheduled-notifications', function (data) {
-        let notification = JSON.parse(data.body)
+        const notification = JSON.parse(data.body)
         console.log('Message from server ', notification)
+        notification.time = DateTime.fromISO(notification.time).toFormat('HH:mm')
+        console.log('Message to UI ', notification)
         scheduledTaskNotifications.value.push(notification)
       })
     })
 
-    return { notifs: scheduledTaskNotifications }
+    return { notifs: scheduledTaskNotifications.value.reverse() }
   }
 
 }
@@ -51,71 +58,128 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     body {
-        cursor: default;
-        font-size: 14px;
-        line-height: 21px;
-        font-family: 'Segoe UI', 'Helvetica', Garuda, Arial, sans-serif;
-        padding: 18px 18px 18px 18px;
+        background-color: #eee;
     }
 
-    ul {
-        margin-bottom: 14px;
-        list-style: none;
+    .mt-70 {
+        margin-top: 70px;
     }
 
-    li {
-        /* width: 300px; */
-        height: 30px;
-        margin: 0 0 7px 0;
+    .mb-70 {
+        margin-bottom: 70px;
     }
 
-    .orange {
-        border-left: 5px solid #f5876e;
+    .card {
+        box-shadow: 0 0.46875rem 2.1875rem rgba(4, 9, 20, 0.03), 0 0.9375rem 1.40625rem rgba(4, 9, 20, 0.03), 0 0.25rem 0.53125rem rgba(4, 9, 20, 0.05), 0 0.125rem 0.1875rem rgba(4, 9, 20, 0.03);
+        border-width: 0;
+        transition: all .2s;
     }
 
-    #slider {
-        /* position: absolute; */
-        transform: translateX(-100%);
-        -webkit-transform: translateX(-100%);
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(26, 54, 126, 0.125);
+        border-radius: .25rem;
     }
 
-    .slide-in {
-        animation: slide-in 0.5s forwards;
-        -webkit-animation: slide-in 0.5s forwards;
+    .card-body {
+        flex: 1 1 auto;
+        padding: 1.25rem;
     }
 
-    .slide-out {
-        animation: slide-out 0.5s forwards;
-        -webkit-animation: slide-out 0.5s forwards;
+    .vertical-timeline {
+        width: 100%;
+        position: relative;
+        padding: 1.5rem 0 1rem;
     }
 
-    @keyframes slide-in {
-        100% {
-            transform: translateX(0%);
-        }
+    .vertical-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 67px;
+        height: 100%;
+        width: 4px;
+        background: #e9ecef;
+        border-radius: .25rem;
     }
 
-    @-webkit-keyframes slide-in {
-        100% {
-            -webkit-transform: translateX(0%);
-        }
+    .vertical-timeline-element {
+        position: relative;
+        margin: 0 0 1rem;
     }
 
-    @keyframes slide-out {
-        0% {
-            transform: translateX(0%);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
+    .vertical-timeline--animate .vertical-timeline-element-icon.bounce-in {
+        visibility: visible;
+        animation: cd-bounce-1 .8s;
     }
 
-    @-webkit-keyframes slide-out {
-        0% {
-            -webkit-transform: translateX(0%);
-        }
-        100% {
-            -webkit-transform: translateX(-100%);
-        }
+    .vertical-timeline-element-icon {
+        position: absolute;
+        top: 0;
+        left: 60px;
+    }
+
+    .vertical-timeline-element-icon .badge-dot-xl {
+        box-shadow: 0 0 0 5px #fff;
+    }
+
+    .badge-dot-xl {
+        width: 18px;
+        height: 18px;
+        position: relative;
+    }
+
+    .badge:empty {
+        display: none;
+    }
+
+    .badge-dot-xl::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: .25rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -5px 0 0 -5px;
+        background: #fff;
+    }
+
+    .vertical-timeline-element-content {
+        position: relative;
+        margin-left: 90px;
+        font-size: .8rem;
+    }
+
+    .vertical-timeline-element-content .timeline-title {
+        font-size: .8rem;
+        text-transform: uppercase;
+        margin: 0 0 .5rem;
+        padding: 2px 0 0;
+        font-weight: bold;
+    }
+
+    .vertical-timeline-element-content .vertical-timeline-element-date {
+        display: block;
+        position: absolute;
+        left: -90px;
+        top: 0;
+        padding-right: 10px;
+        text-align: right;
+        color: #adb5bd;
+        font-size: .7619rem;
+        white-space: nowrap;
+    }
+
+    .vertical-timeline-element-content:after {
+        content: "";
+        display: table;
+        clear: both;
     }
 </style>

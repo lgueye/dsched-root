@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        My tasks
         <notifications/>
     </div>
 </template>
