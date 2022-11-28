@@ -32,14 +32,18 @@ public class TaskExecution implements Runnable {
       return;
     }
     // do the actual job
-    var httpEntity = new HttpEntity<Void>(new HttpHeaders());
-    var uri = UriComponentsBuilder.fromHttpUrl(persisted.getTriggerLocation()).build().toUri();
-    var httpMethod = HttpMethod.POST;
-    restTemplate.exchange(uri, httpMethod, httpEntity, Void.class);
-    log.info("Executed job {}: at location {}", taskId, persisted.getTriggerLocation());
+    try {
+      var httpEntity = new HttpEntity<Void>(new HttpHeaders());
+      var uri = UriComponentsBuilder.fromHttpUrl(persisted.getTriggerLocation()).build().toUri();
+      var httpMethod = HttpMethod.POST;
+      restTemplate.exchange(uri, httpMethod, httpEntity, Void.class);
+      log.info("Executed job {}: at location {}", taskId, persisted.getTriggerLocation());
 
-    repository.persist(persisted.toBuilder().status(TaskStatus.EXECUTED).build());
-    repository.tryUnlock(task);
-    log.info("Updated status and persisted job {}", taskId);
+      repository.persist(persisted.toBuilder().status(TaskStatus.EXECUTED).build());
+      repository.tryUnlock(task);
+      log.info("Updated status and persisted job {}", taskId);
+    } catch (Exception e) {
+      log.error("Failed to execute task " + taskId, e);
+    }
   }
 }
