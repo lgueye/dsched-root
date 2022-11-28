@@ -60,6 +60,36 @@
         </dependency>
 
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.brachu</groupId>
+                <artifactId>docker-compose-maven-plugin</artifactId>
+                <version>${docker-compose-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>start-containers</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>up</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>destroy-containers</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>down</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executablePath>${docker-compose.executable.path}</executablePath>
+                    <followLogs>true</followLogs>
+                    <forceBuild>true</forceBuild>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <profiles>
         <profile>
             <id>work</id>
@@ -68,35 +98,9 @@
                     <family>mac</family>
                 </os>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.brachu</groupId>
-                        <artifactId>docker-compose-maven-plugin</artifactId>
-                        <version>${docker-compose-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>start-containers</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>up</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>destroy-containers</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>down</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <followLogs>true</followLogs>
-                            <forceBuild>true</forceBuild>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <docker-compose.executable.path>/usr/local/bin/docker-compose</docker-compose.executable.path>
+            </properties>
         </profile>
         <profile>
             <id>home</id>
@@ -106,58 +110,9 @@
                     <family>unix</family>
                 </os>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>start-containers</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml up -d --build --remove-orphans</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>destroy-containers</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <commandlineArgs>compose -f ${project.basedir}/src/test/resources/docker-compose.yml down --remove-orphans</commandlineArgs>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sleep-for-a-while</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <tasks>
-                                <sleep seconds="2"></sleep>
-                            </tasks>
-                        </configuration>
-                    </plugin>
-
-                </plugins>
-            </build>
+            <properties>
+                <docker-compose.executable.path>/usr/lib/docker/cli-plugins/docker-compose</docker-compose.executable.path>
+            </properties>
         </profile>
     </profiles>
 </project>
