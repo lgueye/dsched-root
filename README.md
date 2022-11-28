@@ -39,7 +39,7 @@ At this point no event were created so the ui would get no notification. You can
 The script create-schedule.sh creates a single scheduled task with the below specs:
 
 - should trigger 60 s from the creation time
-- instructed to trigger the job located at http://localhost:7000/api/v1/trigger-me
+- instructed to trigger the job located at http://reverse-proxy/api/v1/trigger-me
 
 ### Verify
 
