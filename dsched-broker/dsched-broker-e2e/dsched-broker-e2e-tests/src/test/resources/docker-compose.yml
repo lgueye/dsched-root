@@ -11,9 +11,9 @@ services:
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
   dsched-broker-server:
     image: dsched-broker-server
     container_name: dsched-broker-server
@@ -27,9 +27,9 @@ services:
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
 
   dsched-broker-e2e-producer-server:
     image: dsched-broker-e2e-producer-server
@@ -45,9 +45,9 @@ services:
     healthcheck:
       test: curl --fail http://dsched-broker-e2e-producer-server:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
 
   dsched-broker-e2e-consumer-server-01:
     image: dsched-broker-e2e-consumer-server
@@ -67,9 +67,9 @@ services:
     healthcheck:
       test: curl --fail http://dsched-broker-e2e-consumer-server-01:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
 
   dsched-broker-e2e-consumer-server-02:
     image: dsched-broker-e2e-consumer-server
@@ -89,6 +89,6 @@ services:
     healthcheck:
       test: curl --fail http://dsched-broker-e2e-consumer-server-02:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s

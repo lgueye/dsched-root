@@ -11,9 +11,9 @@ services:
     healthcheck:
       test: curl --fail http://dsched-clock-server:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
   dsched-broker-server:
     image: dsched-broker-server
     container_name: dsched-broker-server
@@ -27,9 +27,9 @@ services:
     healthcheck:
       test: curl --fail http://dsched-broker-server:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
 
   dsched-notification-server:
     image: dsched-notification-server
@@ -45,6 +45,6 @@ services:
     healthcheck:
       test: curl --fail http://dsched-notification-server:8080/actuator/health || exit 1
       interval: 1s
-      retries: 5
+      retries: 20
       start_period: 5s
-      timeout: 5s
+      timeout: 120s
