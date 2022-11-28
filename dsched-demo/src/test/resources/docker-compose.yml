@@ -1,0 +1,216 @@
+version: '3.4'
+
+services:
+  dsched-clock-server:
+    image: dsched-clock-server
+    container_name: dsched-clock-server
+    build:
+      context: ../dsched-clock/dsched-clock-server
+    ports:
+      - "8000:8080"
+    healthcheck:
+      test: curl --fail http://dsched-clock-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-broker-server:
+    image: dsched-broker-server
+    container_name: dsched-broker-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-broker/dsched-broker-server
+    ports:
+      - "9000:8080"
+      - "61616:61616"
+    healthcheck:
+      test: curl --fail http://dsched-broker-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-notification-server:
+    image: dsched-notification-server
+    container_name: dsched-notification-server
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+    build:
+      context: ../dsched-notification/dsched-notification-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9080:8080"
+    healthcheck:
+      test: curl --fail http://dsched-notification-server:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-grid-server-01:
+    image: hazelcast/hazelcast:5.1.3
+    container_name: dsched-grid-server-01
+    environment:
+      - HZ_CLUSTERNAME=e2e
+    ports:
+      - "5701:5701"
+    healthcheck:
+      test: curl -f http://localhost:5701/hazelcast/health/node-state || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-grid-server-02:
+    image: hazelcast/hazelcast:5.1.3
+    container_name: dsched-grid-server-02
+    environment:
+      - HZ_CLUSTERNAME=e2e
+    ports:
+      - "5702:5701"
+    healthcheck:
+      test: curl -f http://localhost:5701/hazelcast/health/node-state || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-scheduler-producer-server-01:
+    image: dsched-scheduler-producer-server
+    container_name: dsched-scheduler-producer-server-01
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-producer/dsched-scheduler-producer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9180:8080"
+      - "9100:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-producer-server-01:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-scheduler-producer-server-02:
+    image: dsched-scheduler-producer-server
+    container_name: dsched-scheduler-producer-server-02
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-producer/dsched-scheduler-producer-server
+    depends_on:
+      dsched-broker-server:
+        condition: service_healthy
+    ports:
+      - "9280:8080"
+      - "9200:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-producer-server-02:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  reverse-proxy:
+    image: reverse-proxy
+    container_name: reverse-proxy
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-e2e/src/test/resources/nginx
+    depends_on:
+      dsched-scheduler-producer-server-01:
+        condition: service_healthy
+      dsched-scheduler-producer-server-02:
+        condition: service_healthy
+    ports:
+      - "7000:80"
+    healthcheck:
+      test: curl --fail http://reverse-proxy/actuator/health || exit 1
+      interval: 1s
+      retries: 30
+      start_period: 5s
+      timeout: 60s
+
+  dsched-scheduler-consumer-server-01:
+    image: dsched-scheduler-consumer-server
+    container_name: dsched-scheduler-consumer-server-01
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+      - node=dsched-scheduler-consumer-server-01
+    volumes:
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-consumer/dsched-scheduler-consumer-server
+    depends_on:
+      dsched-clock-server:
+        condition: service_healthy
+      dsched-notification-server:
+        condition: service_healthy
+    ports:
+      - "9380:8080"
+      - "9300:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-consumer-server-01:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  dsched-scheduler-consumer-server-02:
+    image: dsched-scheduler-consumer-server
+    container_name: dsched-scheduler-consumer-server-02
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+      - node=dsched-scheduler-consumer-server-02
+    volumes:
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-consumer/dsched-scheduler-consumer-server
+    depends_on:
+      dsched-clock-server:
+        condition: service_healthy
+      dsched-notification-server:
+        condition: service_healthy
+    ports:
+      - "9480:8080"
+      - "9400:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-consumer-server-02:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 5
+      start_period: 5s
+      timeout: 60s
+
+  notifications-ui:
+    image: notifications-ui
+    container_name: notifications-ui
+    build:
+      context: frontend
+    depends_on:
+      dsched-notification-server:
+        condition: service_healthy
+    ports:
+      - "5000:80"
+    healthcheck:
+      test: curl --fail http://notifications-ui || exit 1
+      interval: 1s
+      retries: 30
+      start_period: 5s
+      timeout: 60s
