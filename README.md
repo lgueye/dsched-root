@@ -22,7 +22,7 @@ Docker compose is used in `pre` (compose up) and `post` (compose down) integrati
 
 ### Start backends + frontend
 
-- At the root of the project, first build to make sure all backends are up to date
+- At the root of the project, first build to make sure all backends are up-to-date
 
 `mvn clean package`
 
@@ -32,7 +32,7 @@ Docker compose is used in `pre` (compose up) and `post` (compose down) integrati
 
 ### Visit UI
 
-At this point no event were created so the ui would get no notification. You can witness it at http://localhost:5000
+At this point no event were created so the ui would get no notification. You can witness it at `http://localhost:5000`
 
 ### Create schedules
 
@@ -48,11 +48,11 @@ A task has 2 status:
 - `SUBMITTED`: initial state of a task. All scheduler nodes will receive the submitted task. All nodes will send a notification
 - `EXECUTED`: once the scheduler has triggered the job. Only a single scheduler will execute the job and send a notification
 
-Visit the UI at http://localhost:5000.
+Visit the UI at `http://localhost:5000`.
 
-Before the task execution you should see as many notification as scheduler nodes and their status should be `SUBMITTED`
+Before the task gets executed, you should see as many notification as scheduler nodes and their status should be `SUBMITTED`
 
-As soon as the task is executed you should see an additional notification as `EXECUTED`
+As soon as the task was executed, you should see an additional notification as `EXECUTED`
 
 
 
