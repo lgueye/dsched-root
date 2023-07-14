@@ -54,11 +54,11 @@
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
         <maven-jaxb2-plugin.version>0.14.0</maven-jaxb2-plugin.version>
-        <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
+        <maven-pmd-plugin.version>3.17.0</maven-pmd-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
-        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <plugin.prettier.goal>write</plugin.prettier.goal>
         <prettier-maven-plugin.version>0.16</prettier-maven-plugin.version>
