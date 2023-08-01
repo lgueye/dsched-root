@@ -28,13 +28,15 @@ Docker compose is used in `pre` (compose up) and `post` (compose down) integrati
 
 - Then change directory to the demo project and start the full stack
 
-`cd dsched-demo && mvn package -Pdemo`
+`cd dsched-demo && mvn package -Pdemo && cd -`
 
 ### Visit UI
 
 At this point no event were created so the ui would get no notification. You can witness it at `http://localhost:5000`
 
 ### Create schedules
+
+`./create-scheduled-task.sh`
 
 The script `create-scheduled-task.sh` creates a single scheduled task with the below specs:
 
@@ -53,8 +55,3 @@ Visit the UI at `http://localhost:5000`.
 Before the task gets executed, you should see as many notification as scheduler nodes and their status should be `SUBMITTED`
 
 As soon as the task was executed, you should see an additional notification as `EXECUTED`
-
-
-
-
-
