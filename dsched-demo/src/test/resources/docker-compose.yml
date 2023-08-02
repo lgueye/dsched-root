@@ -152,7 +152,7 @@ services:
       - CLOCK_SERVER_URL=http://dsched-clock-server:8080
       - node=dsched-scheduler-consumer-server-01
     volumes:
-      - $PWD/../dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler/dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:
@@ -180,7 +180,7 @@ services:
       - CLOCK_SERVER_URL=http://dsched-clock-server:8080
       - node=dsched-scheduler-consumer-server-02
     volumes:
-      - $PWD/../dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
     build:
       context: ../dsched-scheduler/dsched-scheduler-consumer/dsched-scheduler-consumer-server
     depends_on:

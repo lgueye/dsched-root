@@ -22,13 +22,9 @@ Docker compose is used in `pre` (compose up) and `post` (compose down) integrati
 
 ### Start backends + frontend
 
-- At the root of the project, first build to make sure all backends are up-to-date
+- At the root of the project, run the below command (will build and start the frontend+backends)
 
-`mvn clean package`
-
-- Then change directory to the demo project and start the full stack
-
-`cd dsched-demo && mvn package -Pdemo && cd -`
+`mvn clean package -Pdemo`
 
 ### Visit UI
 
