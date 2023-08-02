@@ -4,23 +4,6 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title">Notifications timeline</h5>
-<!--                    <div class="vertical-timeline vertical-timeline&#45;&#45;animate vertical-timeline&#45;&#45;one-column">-->
-<!--                        <div class="vertical-timeline-item vertical-timeline-element">-->
-<!--                            <div>-->
-<!--                                <span class="vertical-timeline-element-icon bounce-in">-->
-<!--                                    <i class="badge badge-dot badge-dot-xl badge-warning"></i>-->
-<!--                                </span>-->
-<!--                                <div class="vertical-timeline-element-content bounce-in text-right">-->
-<!--                                    <h4 class="timeline-title">41E17752-6FCD-11ED-88F0-071E3F654C98</h4>-->
-<!--                                  <p><span class="text-warning font-weight-bold">SCHEDULED</span> by scheduler-consumer-server-02</p>-->
-<!--                                    <span class="vertical-timeline-element-date pr-50">-->
-<!--                                      11:04-->
-<!--                                      <div class="vertical-timeline-element-date-dot bg-warning"></div>-->
-<!--                                    </span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
                     <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column" v-for="event in notifs" :key="event.time">
                         <div class="vertical-timeline-item vertical-timeline-element">
                             <div>
@@ -31,7 +14,7 @@
                                 <div class="vertical-timeline-element-content bounce-in pr-5 text-right">
                                     <h4 class="timeline-title">{{ event?.task?.id }}</h4>
                                     <p v-if="event.task.status === 'SUBMITTED'"><span class="text-warning font-weight-bold">SCHEDULED</span> by {{ event?.node }}</p>
-                                    <p v-else><span class="text-success font-weight-bold">{{ event?.task?.status }}</span> by scheduler node #{{ event?.node }}</p>
+                                    <p v-else><span class="text-success font-weight-bold">{{ event?.task?.status }}</span> by {{ event?.node }}</p>
                                     <span class="vertical-timeline-element-date">
                                       {{ event?.time }}
                                       <div class="vertical-timeline-element-date-dot bg-warning" v-if="event.task.status === 'SUBMITTED'"></div>
