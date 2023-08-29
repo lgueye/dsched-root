@@ -22,7 +22,6 @@ services:
     build:
       context: ../../dsched-broker/dsched-broker-server
     ports:
-      - "9000:8080"
       - "61616:61616"
     healthcheck:
       test: curl --fail http://dsched-broker-server:8080/actuator/health || exit 1
