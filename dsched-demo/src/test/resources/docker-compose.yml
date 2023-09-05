@@ -197,6 +197,34 @@ services:
       start_period: 5s
       timeout: 120s
 
+  dsched-scheduler-consumer-server-03:
+    image: dsched-scheduler-consumer-server
+    container_name: dsched-scheduler-consumer-server-03
+    environment:
+      - SPRING_ACTIVEMQ_BROKER_URL=tcp://dsched-broker-server:61616
+      - spring.hazelcast.config=file:///opt/hazelcast/hazelcast-client.yaml
+      - SPRING_PROFILES_ACTIVE=e2e
+      - CLOCK_SERVER_URL=http://dsched-clock-server:8080
+      - node=dsched-scheduler-consumer-server-03
+    volumes:
+      - $PWD/dsched-scheduler/dsched-scheduler-e2e/src/test/resources/hazelcast-client.yaml:/opt/hazelcast/hazelcast-client.yaml
+    build:
+      context: ../dsched-scheduler/dsched-scheduler-consumer/dsched-scheduler-consumer-server
+    depends_on:
+      dsched-clock-server:
+        condition: service_healthy
+      dsched-notification-server:
+        condition: service_healthy
+    ports:
+      - "9580:8080"
+      - "9500:8000"
+    healthcheck:
+      test: curl --fail http://dsched-scheduler-consumer-server-03:8080/actuator/health || exit 1
+      interval: 1s
+      retries: 20
+      start_period: 5s
+      timeout: 120s
+
   notifications-ui:
     image: notifications-ui
     container_name: notifications-ui
