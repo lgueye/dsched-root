@@ -6,7 +6,7 @@ Will execute unit tests (surefire plugin)
 
 # Run integration tests and e2e tests
 
-`mvn clean verify`
+`docker stop $(docker ps -a -q) ; docker system prune -f ; mvn clean verify`
 
 Will execute e2e and integration tests (failsafe plugin). Any test ending with `IT` will be picked.
 
@@ -24,7 +24,7 @@ Docker compose is used in `pre` (compose up) and `post` (compose down) integrati
 
 - At the root of the project, run the below command (will build and start the frontend+backends)
 
-`mvn clean package -Pdemo`
+`docker stop $(docker ps -a -q) ; docker system prune -f ; mvn clean package -Pdemo`
 
 ### Visit UI
 
@@ -51,3 +51,7 @@ Visit the UI at `http://localhost:5000`.
 Before the task gets executed, you should see as many notification as scheduler nodes and their status should be `SUBMITTED`
 
 As soon as the task was executed, you should see an additional notification as `EXECUTED`
+
+### Tear down
+
+`docker stop $(docker ps -a -q) ; docker system prune -f`
